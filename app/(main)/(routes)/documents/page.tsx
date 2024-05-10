@@ -2,17 +2,33 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { api } from "@/convex/_generated/api";
 import {
   CreateOrganization,
   useOrganization,
   useUser,
 } from "@clerk/clerk-react";
+import { useMutation } from "convex/react";
 import { PlusCircle } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 const DocumentsPage = () => {
   const { user } = useUser();
   const { organization } = useOrganization();
+  const create = useMutation(api.documents.create);
+
+  const onCreate = () => {
+    if (organization) {
+      const promise = create({ title: "Untitled", orgId: organization?.id });
+
+      toast.promise(promise, {
+        loading: "Создаем новую запись...",
+        success: "Запись создана!",
+        error: "Не удалось создать запись"
+      })
+    }
+  };
 
   return (
     <div className="h-full flex flex-col items-center justify-center space-y-4">
@@ -48,7 +64,7 @@ const DocumentsPage = () => {
           </DialogContent>
         </Dialog>
       ) : (
-        <Button>
+        <Button onClick={onCreate}>
           <PlusCircle className="h-4 w-4 mr-2" />
           Добавить запись
         </Button>
