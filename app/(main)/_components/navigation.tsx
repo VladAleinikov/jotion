@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/popover";
 import TrashBox from "./trash-box";
 import { useSearch } from "@/hooks/use-search";
+import { useSettings } from "@/hooks/use-settings";
 
 export const Navigation = () => {
   const pathname = usePathname();
@@ -33,6 +34,7 @@ export const Navigation = () => {
   const { organization } = useOrganization();
   const create = useMutation(api.documents.create);
   const search = useSearch();
+  const settings = useSettings();
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
@@ -52,7 +54,6 @@ export const Navigation = () => {
       collapse();
     }
   }, [pathname, isMobile]);
-
 
   const mouseDownHandler = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -181,9 +182,14 @@ export const Navigation = () => {
             }}
           />
           {organization && (
-            <Item label="Поиск" icon={Search} isSearch onClick={search.onOpen} />
+            <Item
+              label="Поиск"
+              icon={Search}
+              isSearch
+              onClick={search.onOpen}
+            />
           )}
-          <Item label="Настройки" icon={Settings} onClick={() => {}} />
+          <Item label="Настройки" icon={Settings} onClick={settings.onOpen} />
           {organization && (
             <Item onClick={onCreate} label="Новая запись" icon={PlusCircle} />
           )}
@@ -199,7 +205,7 @@ export const Navigation = () => {
               className="p-0 w-72"
               side={isMobile ? "bottom" : "right"}
             >
-              <TrashBox/>
+              <TrashBox />
             </PopoverContent>
           </Popover>
         </div>
