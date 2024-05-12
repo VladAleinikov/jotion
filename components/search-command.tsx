@@ -29,19 +29,11 @@ export const SearchCommand = () => {
   const documents = useQuery(api.documents.getSearch, {
     orgId: organization.id,
   });
-
-  if (!isMounted) {
-    return null;
-  }
+  
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  const onSelect = (id: string) => {
-    router.push(`/documents/${id}`);
-    onClose();
-  };
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -53,7 +45,15 @@ export const SearchCommand = () => {
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, []);
+  }, [toggle]);
+  const onSelect = (id: string) => {
+    router.push(`/documents/${id}`);
+    onClose();
+  };
+
+  if (!isMounted) {
+    return null;
+  }
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
       <CommandInput placeholder={`Поиск в ${organization.name}'s Jotion...`} />
