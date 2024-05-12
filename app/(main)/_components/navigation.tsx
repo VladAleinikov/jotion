@@ -53,6 +53,7 @@ export const Navigation = () => {
     }
   }, [pathname, isMobile]);
 
+
   const mouseDownHandler = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {

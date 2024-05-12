@@ -244,8 +244,15 @@ export const copy = mutation({
     }
 
     const document = await ctx.db.insert("documents", {
-      ...existingDocument,
+      orgId: existingDocument.orgId,
+      userId: identity.subject,
       title: existingDocument.title + " - copy",
+      content: existingDocument.content,
+      coverImage: existingDocument.coverImage,
+      parentDocument: existingDocument.parentDocument,
+      icon: existingDocument.icon,
+      isArchived: false,
+      isPublished: false
     });
 
     return document;
