@@ -202,31 +202,8 @@ export const remove = mutation({
     const document = await ctx.db.delete(args.id);
 
     return document;
-  }
-})
-
-export const getSearch = query({
-  args: {orgId: v.string()},
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Не авторизован");
-    }
-
-    const documents = await ctx.db
-      .query("documents")
-      .withIndex("by_org", (q) => q.eq("orgId", args.orgId))
-      .filter((q) =>
-        q.eq(q.field("isArchived"), false)
-      )
-      .order("desc")
-      .collect();
-    
-    return documents;
-
-  }
-})
+  },
+});
 
 export const copy = mutation({
   args: { id: v.id("documents") },
@@ -252,7 +229,95 @@ export const copy = mutation({
       parentDocument: existingDocument.parentDocument,
       icon: existingDocument.icon,
       isArchived: false,
-      isPublished: false
+      isPublished: false,
+    });
+
+    return document;
+  },
+});
+
+export const getSearch = query({
+  args: { orgId: v.string() },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Не авторизован");
+    }
+
+    const documents = await ctx.db
+      .query("documents")
+      .withIndex("by_org", (q) => q.eq("orgId", args.orgId))
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .order("desc")
+      .collect();
+
+    return documents;
+  },
+});
+
+export const getById = query({
+  args: {
+    orgId: v.string(),
+    documentId: v.id("documents"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    const document = await ctx.db.get(args.documentId);
+
+    if (!document) {
+      throw new Error("Запись не найдена");
+    }
+
+    if (document.isPublished && !document.isArchived) {
+      return document;
+    }
+
+    if (!identity) {
+      throw new Error("Не авторизован");
+    }
+
+    if (document.orgId !== args.orgId) {
+      throw new Error("Нет доступа");
+    }
+
+    return document;
+  },
+});
+
+export const update = mutation({
+  args: {
+    orgId: v.string(),
+    id: v.id("documents"),
+    title: v.optional(v.string()),
+    content: v.optional(v.string()),
+    coverImage: v.optional(v.string()),
+    icon: v.optional(v.string()),
+    isPublished: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Не авторизован");
+    }
+
+    const userId = identity.subject;
+
+    const { id, orgId, ...rest } = args;
+
+    const existingDocument = await ctx.db.get(id);
+
+    if (!existingDocument) {
+      throw new Error("Запись не найдена.");
+    }
+    if (orgId !== existingDocument.orgId) {
+      throw new Error("Нет доступа");
+    }
+
+    const document = await ctx.db.patch(args.id, {
+      ...rest,
     });
 
     return document;
