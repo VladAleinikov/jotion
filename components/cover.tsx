@@ -1,37 +1,42 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { ImageIcon, X } from "lucide-react"
-import Image from "next/image"
-import { Button } from "./ui/button"
-import { useCoverImage } from "@/hooks/use-cover-image"
-import { useMutation } from "convex/react"
-import { api } from "@/convex/_generated/api"
-import { useParams } from "next/navigation"
-import { Id } from "@/convex/_generated/dataModel"
-import { useOrganization } from "@clerk/clerk-react"
+import { cn } from "@/lib/utils";
+import { ImageIcon, X } from "lucide-react";
+import Image from "next/image";
+import { Button } from "./ui/button";
+import { useCoverImage } from "@/hooks/use-cover-image";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useParams } from "next/navigation";
+import { Id } from "@/convex/_generated/dataModel";
+import { useOrganization } from "@clerk/clerk-react";
+import { useEdgeStore } from "@/lib/edgestore";
 
-interface CoverProps{
-  url?: string,
-  preview?: boolean
+interface CoverProps {
+  url?: string;
+  preview?: boolean;
 }
 
 const Cover = ({ url, preview }: CoverProps) => {
+  const { edgestore } = useEdgeStore();
   const params = useParams();
-  const { onOpen } = useCoverImage();
-  const { organization} = useOrganization();
+  const { onReplace } = useCoverImage();
+  const { organization } = useOrganization();
   const removeCoverImage = useMutation(api.documents.removeCoverImage);
 
   if (!organization) {
     return null;
   }
-  
-  const onRemove = () => {
+
+  const onRemove = async () => {
+    if (url) {
+      await edgestore.publicFiles.delete({ url });
+    }
     removeCoverImage({
       id: params.documentId as Id<"documents">,
-      orgId: organization?.id
-    })
-  }
+      orgId: organization?.id,
+    });
+  };
 
   return (
     <div
@@ -45,7 +50,7 @@ const Cover = ({ url, preview }: CoverProps) => {
       {url && !preview && (
         <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
           <Button
-            onClick={onOpen}
+            onClick={() => onReplace(url)}
             className="text-xs text-muted-foreground"
             variant="outline"
             size="sm"
@@ -66,6 +71,6 @@ const Cover = ({ url, preview }: CoverProps) => {
       )}
     </div>
   );
-}
+};
 
-export default Cover
+export default Cover;

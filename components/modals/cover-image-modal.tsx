@@ -14,7 +14,7 @@ import { Id } from "@/convex/_generated/dataModel";
 export const CoverImageModal = () => {
   const params = useParams();
   const { organization } = useOrganization();
-  const { isOpen, onClose: onCloseModal } = useCoverImage();
+  const { isOpen, onClose: onCloseModal, url } = useCoverImage();
   const { edgestore } = useEdgeStore();
   const update = useMutation(api.documents.update);
 
@@ -36,10 +36,13 @@ export const CoverImageModal = () => {
       setIsSubmiting(true);
       setFile(file);
 
-      const res = await edgestore.publicFiles.upload({
-        file,
+      let res = await edgestore.publicFiles.upload({
+          file,
+          options: {
+            replaceTargetUrl: url,
+          },
       });
-
+      
       await update({
         id: params.documentId as Id<"documents">,
         orgId: organization.id,
