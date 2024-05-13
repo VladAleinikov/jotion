@@ -6,6 +6,8 @@ import { ConvexProvider } from "@/components/providers/convex-provider";
 import { Toaster } from "sonner";
 import { ModalProvider } from "@/components/providers/modal-provider";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/mantine/style.css";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 

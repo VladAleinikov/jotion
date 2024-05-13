@@ -11,13 +11,14 @@ import { useParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 import { useOrganization } from "@clerk/clerk-react";
 import { useEdgeStore } from "@/lib/edgestore";
+import { Skeleton } from "./ui/skeleton";
 
 interface CoverProps {
   url?: string;
   preview?: boolean;
 }
 
-const Cover = ({ url, preview }: CoverProps) => {
+export const Cover = ({ url, preview }: CoverProps) => {
   const { edgestore } = useEdgeStore();
   const params = useParams();
   const { onReplace } = useCoverImage();
@@ -73,4 +74,8 @@ const Cover = ({ url, preview }: CoverProps) => {
   );
 };
 
-export default Cover;
+Cover.Skeleton = function CoverSkeleton() {
+  return (
+    <Skeleton className="w-full h-[12vh]"/>
+  )
+}
