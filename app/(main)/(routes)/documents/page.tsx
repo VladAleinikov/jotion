@@ -11,22 +11,27 @@ import {
 import { useMutation } from "convex/react";
 import { PlusCircle } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const DocumentsPage = () => {
+  const router = useRouter();
   const { user } = useUser();
   const { organization } = useOrganization();
   const create = useMutation(api.documents.create);
 
   const onCreate = () => {
     if (organization) {
-      const promise = create({ title: "Untitled", orgId: organization?.id });
+      const promise = create({
+        title: "Untitled",
+        orgId: organization?.id,
+      }).then((documentId) => router.push(`/documents/${documentId}`));
 
       toast.promise(promise, {
         loading: "Создаем новую запись...",
         success: "Запись создана!",
-        error: "Не удалось создать запись"
-      })
+        error: "Не удалось создать запись",
+      });
     }
   };
 
