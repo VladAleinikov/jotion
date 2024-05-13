@@ -34,7 +34,7 @@ export const Title = ({ initialData }: TitleProps) => {
       const promise = updateTitle({
         orgId: initialData.orgId,
         id: initialData._id,
-        title: inputRef.current.value,
+        title: inputRef.current.value || "Untitled",
       });
 
       toast.promise(promise, {
@@ -47,6 +47,7 @@ export const Title = ({ initialData }: TitleProps) => {
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
+      e.preventDefault();
       disableInput();
     }
   };
