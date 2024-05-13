@@ -10,6 +10,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { update } from "@/convex/documents";
+import { useCoverImage } from "@/hooks/use-cover-image";
 
 interface ToolbarProps {
   initialData: Doc<"documents">;
@@ -19,10 +20,11 @@ interface ToolbarProps {
 export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
   const inputRef = useRef<ElementRef<"textarea">>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(initialData.title);
 
   const update = useMutation(api.documents.update);
   const removeIcon = useMutation(api.documents.removeIcon);
+
+  const {onOpen : onOpenCoverImage}= useCoverImage();
 
   const enableInput = () => {
     setIsEditing(true);
@@ -72,7 +74,7 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
     });
   }
   return (
-    <div className="pl-[54px] group relative:">
+    <div className="pt-[54px] group relative:">
       {!!initialData.icon && !preview && (
         <div className="flex items-center gap-x-2 group/icon pt-6:">
           <IconPicker onChange={onIconSelect}>
@@ -111,10 +113,10 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
             className="text-muted-foregroumd text-xs"
             variant="outline"
             size="sm"
-            onClick={() => {}}
+            onClick={onOpenCoverImage}
           >
             <ImageIcon className="h-4 w-4 mr-2" />
-            Добавить изображение
+            Добавить обложку
           </Button>
         )}
       </div>
