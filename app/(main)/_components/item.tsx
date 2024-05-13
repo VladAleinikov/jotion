@@ -87,7 +87,9 @@ export const Item = ({
     e.stopPropagation();
     if (!id) return;
 
-    const promise = copy({ id });
+    const promise = copy({ id }).then((documentId) =>
+      router.push(`/documents/${documentId}`)
+    );
 
     toast.promise(promise, {
       loading: "Копируем запись...",
@@ -100,7 +102,7 @@ export const Item = ({
     e.stopPropagation();
     if (!id) return;
 
-    const promise = archive({ id });
+    const promise = archive({ id }).then(() => router.push("/documents"));
 
     toast.promise(promise, {
       loading: "Переносим в корзину...",
