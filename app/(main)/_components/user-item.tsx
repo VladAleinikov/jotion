@@ -53,15 +53,16 @@ export const UserItem = () => {
               <p className="text-sm line-clamp-1">
                 {user?.fullName}$apos;s Jotion
               </p>
-                                </div>
+            </div>
           </div>
-                    </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="w-full cursor-pointer text-muted-foreground" asChild>
-                          <SignOutButton>
-                                Выйти
-                          </SignOutButton>
-                    </DropdownMenuItem>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="w-full cursor-pointer text-muted-foreground"
+          asChild
+        >
+          <SignOutButton>Выйти</SignOutButton>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

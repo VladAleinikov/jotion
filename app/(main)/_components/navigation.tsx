@@ -201,7 +201,7 @@ export const Navigation = () => {
 
           <Popover>
             <PopoverTrigger className="w-full mt-4">
-              <Item label="Trash" icon={Trash} />
+              <Item label="Корзина" icon={Trash} />
             </PopoverTrigger>
             <PopoverContent
               className="p-0 w-72"
