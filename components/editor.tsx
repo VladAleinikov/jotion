@@ -26,7 +26,7 @@ const Editor = ({ onChange, initialContent, editable }: EditorProps) => {
 
   const editor: BlockNoteEditor = useCreateBlockNote({
     initialContent: initialContent ? JSON.parse(initialContent) as PartialBlock[] : undefined,
-    uploadFile: uploadHandler
+    uploadFile: uploadHandler,
   }); 
 
   return (
@@ -35,6 +35,7 @@ const Editor = ({ onChange, initialContent, editable }: EditorProps) => {
         editor={editor}
         onChange={() => onChange(JSON.stringify(editor.document, null, 2))}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
+        editable={editable}
       />
     </div>
   )

@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 import { Title } from "./title";
 import Banner from "./banner";
 import { Menu } from "./menu";
+import { Pusblish } from "./pusblish";
 
 interface NavbarProps {
   orgId?: string;
@@ -54,6 +55,7 @@ export const Navbar = ({
         <div className="flex items-center justify-between w-full">
           <Title initialData={document} />
           <div className="flex items-center gap-x-2">
+            <Pusblish initialData={document} />
             <Menu documentId={document._id} />
           </div>
         </div>

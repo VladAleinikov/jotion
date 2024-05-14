@@ -258,7 +258,7 @@ export const getSearch = query({
 
 export const getById = query({
   args: {
-    orgId: v.string(),
+    orgId: v.optional(v.string()),
     documentId: v.id("documents"),
   },
   handler: async (ctx, args) => {
