@@ -22,14 +22,9 @@ export const SearchCommand = () => {
   const [isMounted, setIsMounted] = useState(false);
   const { isOpen, onClose, toggle } = useSearch((store) => store);
 
-  if (!organization) {
-    return null;
-  }
-
   const documents = useQuery(api.documents.getSearch, {
-    orgId: organization.id,
+    orgId: organization?.id || "",
   });
-  
 
   useEffect(() => {
     setIsMounted(true);
@@ -50,6 +45,10 @@ export const SearchCommand = () => {
     router.push(`/documents/${id}`);
     onClose();
   };
+
+  if (!organization) {
+    return null;
+  }
 
   if (!isMounted) {
     return null;
