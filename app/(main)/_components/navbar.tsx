@@ -2,13 +2,15 @@
 
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useQuery } from "convex/react";
-import { MenuIcon } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { MenuIcon, Save } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Title } from "./title";
 import Banner from "./banner";
 import { Menu } from "./menu";
 import { Pusblish } from "./pusblish";
+import { Button } from "@/components/ui/button";
+import { useContent } from "@/hooks/use-content";
 
 interface NavbarProps {
   orgId?: string;
@@ -26,6 +28,17 @@ export const Navbar = ({
     orgId,
     documentId: params.documentId as Id<"documents">,
   });
+  const { isSaved, content, saveContent } = useContent();
+  const update = useMutation(api.documents.update);
+
+  const onSave = () => {
+    update({
+      id: params.documentId as Id<"documents">,
+      orgId,
+      content,
+    });
+    saveContent();
+  };
 
   if (document === undefined) {
     return (
@@ -55,6 +68,15 @@ export const Navbar = ({
         <div className="flex items-center justify-between w-full">
           <Title initialData={document} />
           <div className="flex items-center gap-x-2">
+            <Button
+              size="sm"
+              variant="default"
+              disabled={isSaved}
+              onClick={onSave}
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Сохранить изменения
+            </Button>
             <Pusblish initialData={document} />
             <Menu documentId={document._id} />
           </div>

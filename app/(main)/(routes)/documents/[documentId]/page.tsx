@@ -5,6 +5,7 @@ import { Toolbar } from "@/components/toolbar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useContent } from "@/hooks/use-content";
 import { useOrganization } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "convex/react";
 import dynamic from "next/dynamic";
@@ -22,6 +23,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     []
   );
   const { organization } = useOrganization();
+  const { setContent} = useContent();
 
   const document = useQuery(api.documents.getById, {
     documentId: params.documentId,
@@ -62,7 +64,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       <Cover url={document.coverImage} />
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         <Toolbar initialData={document} />
-        <Editor onChange={onChange} initialContent={document.content} />
+        <Editor onChange={setContent} initialContent={document.content} />
       </div>
     </div>
   );
